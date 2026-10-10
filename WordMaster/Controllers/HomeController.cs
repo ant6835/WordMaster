@@ -21,7 +21,7 @@ namespace WordMaster.Controllers
         [HttpPost]
         public IActionResult Play()
         {
-            return RedirectToAction("Game", "Game");
+            return RedirectToAction("Start", "Game");
         }
     }
 }

@@ -6,30 +6,24 @@ namespace WordMaster.Models
     {
         public GameContext(DbContextOptions<GameContext> options) : base(options) { }
 
-        public DbSet<string> Words { get; set; } = null!;
+        public DbSet<Word> Words { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<string>().HasData(
-                "count",
-                "flush",
-                "eerie",
-                "fault",
-                "blast",
-                "trick",
-                "scare",
-                "folly",
-                "steam",
-                "quark",
-                "field",
-                "house",
-                "cloth",
-                "realm",
-                "weird",
-                "noise",
-                "crumb",
-                "clank",
-                "night"
+            string[] words =
+            {
+                "count", "flush", "eerie", "fault", "blast",
+                "trick", "scare", "folly", "steam", "quark",
+                "field", "house", "cloth", "realm", "weird",
+                "noise", "crumb", "clank", "night"
+            };
+
+            modelBuilder.Entity<Word>().HasData(
+                words.Select((word, index) => new Word
+                {
+                    WordId = index + 1,
+                    Value = word
+                })
             );
         }
     }

@@ -18,7 +18,7 @@ namespace WordMaster.Controllers
         [HttpGet]
         public IActionResult Start()
         {
-            List<string> words = context.Words.ToList();
+            List<Word> words = context.Words.ToList();
 
             if (words is null)
             {
@@ -26,7 +26,7 @@ namespace WordMaster.Controllers
             }
 
             int count = words.Count;
-            string word = words[random.Next(count)];
+            string word = words[random.Next(count)].Value;
 
             if (word is null)
             {
@@ -40,9 +40,10 @@ namespace WordMaster.Controllers
                 WordLength = length,
                 TotalGuesses = 6, // hardcoded for now, difficulty can be added later
 
-                CurrentGuesses = 6,
-                PreviousGuesses = new string[6]
+                CurrentGuesses = 6
             };
+
+            TempData.Clear();
 
             return View("Game", state);
         }
@@ -50,13 +51,14 @@ namespace WordMaster.Controllers
         [HttpPost]
         public IActionResult GameOver(bool retry)
         {
+            TempData.Clear();
             if (retry)
                 return RedirectToAction("Start");
             else
                 return RedirectToAction("Index", "Home");
         }
 
-        [HttpGet]
+        [HttpPost]
         public IActionResult Guess(GameState state)
         {
             if (state == null || state.Word == null)
@@ -70,9 +72,11 @@ namespace WordMaster.Controllers
                 return View("Game", state);
             }
 
-            if (state.Guess.Length > state.WordLength)
+            state.Guess = state.Guess.Trim().ToLowerInvariant();
+
+            if (state.Guess.Length != state.WordLength)
             {
-                ModelState.AddModelError("Guess", "Guess must not exceed word length.");
+                ModelState.AddModelError("Guess", $"Guess must be exactly {state.WordLength} letters long.");
                 return View("Game", state);
             }
 
@@ -86,7 +90,11 @@ namespace WordMaster.Controllers
 
             // set previous guess
             int currentGuess = state.TotalGuesses - state.CurrentGuesses;
-            state.PreviousGuesses[currentGuess] = state.Guess;
+
+            for (int i = 0; i <= currentGuess; i++)
+            {
+                TempData[$"Guess{i}"] = state.Guess;
+            }
 
             state.CurrentGuesses--;
 

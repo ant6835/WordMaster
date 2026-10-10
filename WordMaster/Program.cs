@@ -1,11 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+using WordMaster.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-//builder.Services.AddDbContext<TripContext>(options =>
-//    options.UseSqlServer(
-//        builder.Configuration.GetConnectionString("TripContext")));
+builder.Services.AddDbContext<GameContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("GameContext")));
 
 builder.Services.AddRouting(options =>
 {

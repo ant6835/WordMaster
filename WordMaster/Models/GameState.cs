@@ -8,7 +8,6 @@
 
         public string? Guess { get; set; }
         public int CurrentGuesses { get; set; }
-        public string[]? PreviousGuesses { get; set; }
 
         public bool WonGame { get; set; } = false;
 
